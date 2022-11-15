@@ -1,0 +1,1 @@
+Written in Python, this project is all your solutions from a day to day basis for AOC. Remember to go to r/aoc as this will be published onto it
