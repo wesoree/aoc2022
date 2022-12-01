@@ -7,7 +7,6 @@ with open('dec1input.txt', 'r', encoding='UTF-8') as inventory:
         a = sum(elves)
         elfsum.append(a)    
     def maxelves():
-        global b
         b = max(elfsum)
         top3.append(b)
         elfsum.remove(b)
