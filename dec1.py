@@ -1,3 +1,6 @@
-with open("dec1input.txt") as file:
-  while (line := file.readline().rstrip()):
-    print(line)
+with open("dec1input.txt") as input_data:
+  elflist = []
+  for line in input_data:
+    elflist.append(sum(line))
+  a = max(elflist)
+  print(a)
