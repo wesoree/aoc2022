@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "aoc2022"
+name = "aoc2022withredactedinfo"
 version = "0.1.0"
 description = ""
 authors = ["wesoree <wesleylo174@gmail.com>"]
