@@ -7,8 +7,7 @@ from functools import reduce
 
 
 def is_visible(x: int, y: int, forest: np.ndarray) -> bool:
-    neighbors_groups = forest[:x, y], forest[x +
-                                             1:, y], forest[x, :y], forest[x, y+1:]
+    neighbors_groups = forest[:x, y], forest[x + 1:, y], forest[x, :y], forest[x, y+1:]
     return any((forest[x, y] > neighbors).all() for neighbors in neighbors_groups)
 
 
@@ -23,18 +22,15 @@ def iter_trees(shape_x, shape_y):
 def part_1(input_data: str) -> int:
     forest = get_forest(input_data)
     n_visible: int = 2*(forest.shape[0] + forest.shape[1] - 2)
-    n_visible += sum(is_visible(tree_x, tree_y, forest)
-                     for tree_x, tree_y in iter_trees(*forest.shape))
+    n_visible += sum(is_visible(tree_x, tree_y, forest) for tree_x, tree_y in iter_trees(*forest.shape))
     return n_visible
 
 
 def main() -> None:
 
     itxt = open("day8input.txt", mode='r').read().splitlines()
-    tree = {(x, y): t for y, row in enumerate(itxt)
-            for x, t in enumerate(list(row))}
-    visi = {(x, y): 0 for y, row in enumerate(itxt)
-            for x, _ in enumerate(list(row))}
+    tree = {(x, y): t for y, row in enumerate(itxt) for x, t in enumerate(list(row))}
+    visi = {(x, y): 0 for y, row in enumerate(itxt) for x, _ in enumerate(list(row))}
 
     for xt, yt in tree.keys():
         if xt == 0 or yt == 0 or xt == len(list(itxt)) or yt == len(itxt):
