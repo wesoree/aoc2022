@@ -1,4 +1,4 @@
-with open('day1input.txt', 'r', encoding='UTF-8') as inventory:
+with open('day1input.txt', 'r', encoding='UTF-8') as inventory: # remember to find all \n's in file and make sure each inventory is a line
     elflist = [line.rstrip() for line in inventory]
     elfsum = []
     top3 = []
