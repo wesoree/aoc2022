@@ -1,109 +1,115 @@
-import mip as mip
-from parse import parse
+import re
+import sys
+import numpy
 
 
-def check_blueprint(mins, blueprint) -> float:
-    model = mip.Model(sense=mip.MAXIMIZE)
-    obj = mip.LinExpr(0)
-    vars_all = []
-    for m in range(mins):
-        vars = {}
-        vars.update({"ore": model.add_var(f"ore_{m}", var_type=mip.BINARY)})
-        vars.update({"clay": model.add_var(f"clay_{m}", var_type=mip.BINARY)})
-        vars.update({"obs": model.add_var(f"obs_{m}", var_type=mip.BINARY)})
-        vars.update({"geo": model.add_var(f"geo_{m}", var_type=mip.BINARY)})
-        vars_all.append(vars)
-
-        model.add_constr(vars["ore"] + vars["clay"] + vars["obs"] + vars["geo"] <= 1)
-
-        ore = mip.LinExpr(const=m)
-        clay = mip.LinExpr(const=0)
-        obs = mip.LinExpr(const=0)
-        for m_ in range(m):
-            ore.add_var(vars_all[m_]["ore"], m - m_ - 1)
-            ore.add_var(vars_all[m_]["ore"], -blueprint["oror"])
-            ore.add_var(vars_all[m_]["clay"], -blueprint["clor"])
-            ore.add_var(vars_all[m_]["obs"], -blueprint["obor"])
-            ore.add_var(vars_all[m_]["geo"], -blueprint["geor"])
-
-            clay.add_var(vars_all[m_]["clay"], m - m_ - 1)
-            clay.add_var(vars_all[m_]["obs"], -blueprint["obcl"])
-
-            obs.add_var(vars_all[m_]["obs"], m - m_ - 1)
-            obs.add_var(vars_all[m_]["geo"], -blueprint["geob"])
-
-        model.add_constr(
-            ore
-            >= vars["ore"] * blueprint["oror"]
-            + vars["clay"] * blueprint["clor"]
-            + vars["obs"] * blueprint["obor"]
-            + vars["geo"] * blueprint["geor"]
-        )
-        model.add_constr(clay >= vars["obs"] * blueprint["obcl"])
-        model.add_constr(obs >= vars["geo"] * blueprint["geob"])
-
-        obj.add_var(vars["geo"], mins - m - 1)
-
-    model.objective = obj
-
-    model.write(f"d19p1_{blueprint['i']}.lp")
-    model.optimize()
-
-    return model.objective_value
+MINERALS = {'ore': 0, 'clay': 1, 'obsidian': 2, 'geode': 3}
+def to_array(bp):
+    arr = numpy.zeros([4, 4], dtype=numpy.uint32)
+    for bot in bp:
+        i = MINERALS[bot['type']]
+        for n, mineral in bot['costs']:
+            j = MINERALS[mineral]
+            arr[i][j] = n
+    return arr
 
 
-def d19p1(file) -> int:
-    with open(file) as f:
-        lines = f.readlines()
-
-    mins = 24
-    blueprints = []
-    score = []
-
-    for l in lines:
-        vars = parse(
-            "Blueprint {i}: Each ore robot costs {oror} ore. Each clay robot costs {clor} ore. Each obsidian robot costs {obor} ore and {obcl} clay. Each geode robot costs {geor} ore and {geob} obsidian.",
-            l.strip(),
-        ).named
-        blueprints.append({k: int(v) for k, v in vars.items()})
-
-    for blueprint in blueprints:
-        val = check_blueprint(mins, blueprint)
-        score.append(val * blueprint["i"])
-
-    return sum(score)
-
-
-def d19p2(file) -> int:
-    with open(file) as f:
-        lines = f.readlines()
-
-    mins = 32
-    blueprints = []
-    score = []
-
-    for l in lines:
-        vars = parse(
-            "Blueprint {i}: Each ore robot costs {oror} ore. Each clay robot costs {clor} ore. Each obsidian robot costs {obor} ore and {obcl} clay. Each geode robot costs {geor} ore and {geob} obsidian.",
-            l.strip(),
-        ).named
-        blueprints.append({k: int(v) for k, v in vars.items()})
-
-    for blueprint in blueprints[:3]:
-        val = check_blueprint(mins, blueprint)
-        score.append(val)
-
-    return score[0] * score[1] * score[2]
+def parse_input(path):
+    words = open(path).read().split()
+    bps = []
+    i = 0
+    while i < len(words):
+        if words[i] == 'Blueprint':
+            bps.append([])
+            i += 2
+        elif words[i] == 'Each':
+            bot = {'type': words[i + 1], 'costs': []}
+            bps[-1].append(bot)
+            i += 4
+        elif words[i] == 'and':
+            i += 1
+        else:
+            assert words[i].isdigit(), (i, words[i])
+            quantity = int(words[i])
+            mineral = words[i + 1].rstrip('.')
+            bps[-1][-1]['costs'].append((quantity, mineral))
+            i += 2
+    return [to_array(bp) for bp in bps]
 
 
-import time
+def prune_states(states, max_costs, time_left):
+    states = states.copy()
 
-file = "day19input.txt"
-start = time.time()
-print(d19p1(file))
-mid = time.time()
-print(d19p2(file))
-end = time.time()
+    # Once we have enough of a reosurce that we can't ever run out, there
+    # is no benefit to tracking quantities of the resource above that level,
+    # so we cap resource counts to keep state counts down
+    for state in states:
+        for i in range(3):
+            deficit = max_costs[i] - state[i]
+            max_useful_quantity = max_costs[i] + deficit * time_left
+            if state[i + 4] >= max_useful_quantity:
+                state[i + 4] = max_useful_quantity
 
-print(f"Part 1 took {mid-start}s")
-print(f"Part 2 took {end-mid}s")
+    for i in range(7, -1, -1):
+        idxs = numpy.argsort(states[:, i], kind='stable')
+        states = states[idxs]
+
+    new_states = numpy.zeros(states.shape, dtype=states.dtype)
+    n = 0
+
+    for i in range(len(states)):
+        redundant = numpy.any(numpy.all(states[i] <= states[i+1:], axis=1))
+        if not redundant:
+            new_states[n] = states[i]
+            n += 1
+
+    return new_states[:n]
+
+
+def simulate(bp, duration):
+    max_costs = [max(bp[i][j] for i in range(4)) for j in range(4)]
+    states = numpy.zeros([1, 8], dtype=numpy.uint32)
+    states[0][0] = 1
+
+    for i in range(duration):
+        new_states = numpy.zeros([0, 8], dtype=numpy.uint32)
+        for state in states:
+            bots = state[:4]
+            resources = state[4:]
+            n = len(new_states)
+            new_states = numpy.resize(new_states, (n + 1, 8))
+            new_states[n] = numpy.append(bots, resources + bots)
+            for j, bot_cost in enumerate(bp):
+                if j < 3 and bots[j] >= max_costs[j]:
+                        continue # No benefit to building more bots of this type
+                if numpy.all(resources >= bot_cost):
+                    new_bots = bots.copy()
+                    new_bots[j] += 1
+                    new_resources = resources + bots - bot_cost
+                    n = len(new_states)
+                    new_states = numpy.resize(new_states, (n + 1, 8))
+                    new_states[n] = numpy.append(new_bots, new_resources)
+        pre_prune = len(new_states)
+        states = prune_states(new_states, max_costs, duration - i - 1)
+
+    return  max(states[:, 7])
+
+
+def main(input_file):
+    bps = parse_input(input_file)
+
+    quality = 0
+    for i, bp in enumerate(bps):
+        n = simulate(bps[i], 24)
+        quality += (i + 1) * n
+    print("Part 1:", quality)
+
+    product = 1
+    for i, bp in enumerate(bps[:3]):
+        n = simulate(bp, 32)
+        product *= n
+    print("Part 2:", product)
+
+
+if __name__ == '__main__':
+    main('day19input.txt')
