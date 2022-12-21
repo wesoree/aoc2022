@@ -68,7 +68,7 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    with open('day8input.txt') as input_raw:
+    with open('inputs/day8input.txt') as input_raw:
         input_data = input_raw.read()
     print(part_1(input_data))
     sys.exit(main())

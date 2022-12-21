@@ -6,7 +6,7 @@ def prio(x):
     return string.ascii_letters.index(x) + 1
 
 
-rucksacks = [line.strip() for line in open("day3input.txt").readlines()]
+rucksacks = [line.strip() for line in open("inputs/day3input.txt").readlines()]
 # part 1
 common = itertools.chain(*[list(set(r[:len(r)//2]).intersection(set(r[len(r)//2:]))) for r in rucksacks])
 print(sum(prio(c) for c in common))

@@ -1,3 +1,5 @@
+import aocinput as aoc
+
 def partone(throw, response):
     pts = 0
     if throw == 'A': 
@@ -50,12 +52,12 @@ def parttwo(throw, response):
 p1score = 0
 p2score = 0
 
-with open('day2input.txt') as data:
-    data = [line.strip() for line in data.readlines()]
 
-    for round in data:
-        p1score += partone(round[0], round[2])
-        p2score += parttwo(round[0], round[2])
+data = aoc.import_aoc_list(2)
+
+for round in data:
+    p1score += partone(round[0], round[2])
+    p2score += parttwo(round[0], round[2])
  
 print(p1score)
 print(p2score)

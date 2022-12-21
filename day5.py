@@ -1,7 +1,7 @@
 import copy
 import re
 
-with open('day5input.txt') as f:
+with open('inputs/day5input.txt') as f:
     # parse as { 1: ['A'], 2: ['B', 'C'] }
     cargo = {
         int(c[0]): [*filter(str.isalpha, c)]

@@ -1,4 +1,4 @@
-sections = [[list(map(int, s.split('-'))) for s in line.split(',')] for line in open("day4input.txt").read().splitlines()]
+sections = [[list(map(int, s.split('-'))) for s in line.split(',')] for line in open("inputs/day4input.txt").read().splitlines()]
 
 full_overlap = sum([a >= c and b <= d or c >= a and d <= b for (a, b), (c, d) in sections])
 print(full_overlap) #part 1

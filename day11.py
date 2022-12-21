@@ -1,5 +1,5 @@
 import math
-lines = [x.split() for x in open("day11input.txt")]
+lines = [x.split() for x in open("inputs/day11input.txt")]
 d=0
 
 def init_mon():
