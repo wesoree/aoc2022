@@ -1,32 +1,66 @@
+import re
+
+from sympy import Symbol, solve
+from sympy.parsing.sympy_parser import parse_expr
+from sympy.solvers import solve
+
 import aocinput
-from sympy import sympify, solve
 
 DAY = 21
 
-class Monke:
-    def __init__(self, function, name=''):
-        self.name = name
-        self.function = function
-        self.monke_1, self.monke_2 = (function[0:4], function[7:11]) if not function.isdigit() else (None, None)
-        self.num = int(function) if function.isdigit() else None
-        self.first_val, self.second_val = None, None
-    
-    def get_num(self, monkes):
-        if self.name == 'humn':
-            return None
-        return self.evaluate(monkes) if not self.num else self.num
+def parse(exprs: list[str]) -> tuple[dict, dict]:
+    ts = {}  # terminals
+    nonts = {}  # non-terminals
 
-    def get_monke_wo_calc_num(self): #get monke without calculated num
-        return self.monke_1 if not self.first_val else self.monke_2
+    for expr in exprs:
+        lhs, rhs = expr.split(": ")
 
-    def evaluate(self, monkes):
-        self.first_val = monkes[self.monke_1].get_num(monkes)
-        self.second_val = monkes[self.monke_2].get_num(monkes)
-        return int(eval(self.function, {self.monke_1: self.first_val, self.monke_2: self.second_val})) if (self.first_val and self.second_val) else None
-    def solve_eq(self, score):
-        eq = self.function.replace(str(self.monke_1), str(self.first_val).lower())
-        eq = eq.replace(str(self.monke_2), str(self.second_val).lower())
-        return solve(sympify(f"Eq({eq.replace(' ', '')},{score})"))[0]
-    def a(input):
-        monkes = {name:Monke(function) for name,function in [line.split(': ') for line in aocinput.import_aoc_readlines(DAY)]}
-        
+        try:
+            ts[lhs] = int(rhs)
+        except ValueError:
+            x, op, y = re.match("([a-z]+)\s([+-/*])\s([a-z]+)", rhs).groups()
+            nonts[lhs] = (op, x, y)
+
+    return ts, nonts
+
+
+def eval_with(ts, nonts) -> callable:
+    def _inner(key) -> float:
+        if key in ts:
+            return ts[key]
+
+        op, l, r = nonts[key]
+        return eval(f"lambda x, y: x {op} y")(_inner(l), _inner(r))
+
+    return _inner
+
+
+def eq_with(ts, nonts, unk: str) -> callable:
+    def _inner(key) -> str:
+        if key in ts:
+            return key if key == unk else str(ts[key])
+
+        op, l, r = nonts[key]
+        return f"({_inner(l)} {op} {_inner(r)})"
+
+    return _inner
+
+
+def main():
+    exprs = aocinput.import_aoc_list(DAY)
+
+    ts, nonts = parse(exprs)
+
+    evaluator = eval_with(ts, nonts)
+    print("Part 1:", int(evaluator(key="root")))
+
+    unk = "humn"
+    eq = eq_with(ts, nonts, unk)
+    _, l, r = nonts["root"]
+    l = parse_expr(eq(l))
+    r = parse_expr(eq(r))
+    print("Part 2:", solve(l - r, Symbol(unk)).pop())
+
+
+if __name__ == "__main__":
+    main()
