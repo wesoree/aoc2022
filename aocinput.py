@@ -19,3 +19,4 @@ def import_aoc_readlines(day):
     with open(f'inputs/day{day}input.txt') as f:
         f = f.readlines()
     return f
+
