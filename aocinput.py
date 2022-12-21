@@ -16,4 +16,6 @@ def import_aoc_read(day):
     return input_file
 
 def import_aoc_readlines(day):
-    pass
+    with open(f'inputs/day{day}input.txt') as f:
+        f = f.readlines()
+    return f
