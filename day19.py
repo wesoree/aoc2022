@@ -1,11 +1,11 @@
 import re
 import sys
-import numpy
+import numpy as np
 
 
 MINERALS = {'ore': 0, 'clay': 1, 'obsidian': 2, 'geode': 3}
 def to_array(bp):
-    arr = numpy.zeros([4, 4], dtype=numpy.uint32)
+    arr = np.zeros([4, 4], dtype=np.uint32)
     for bot in bp:
         i = MINERALS[bot['type']]
         for n, mineral in bot['costs']:
@@ -51,14 +51,14 @@ def prune_states(states, max_costs, time_left):
                 state[i + 4] = max_useful_quantity
 
     for i in range(7, -1, -1):
-        idxs = numpy.argsort(states[:, i], kind='stable')
+        idxs = np.argsort(states[:, i], kind='stable')
         states = states[idxs]
 
-    new_states = numpy.zeros(states.shape, dtype=states.dtype)
+    new_states = np.zeros(states.shape, dtype=states.dtype)
     n = 0
 
     for i in range(len(states)):
-        redundant = numpy.any(numpy.all(states[i] <= states[i+1:], axis=1))
+        redundant = np.any(np.all(states[i] <= states[i+1:], axis=1))
         if not redundant:
             new_states[n] = states[i]
             n += 1
@@ -68,27 +68,27 @@ def prune_states(states, max_costs, time_left):
 
 def simulate(bp, duration):
     max_costs = [max(bp[i][j] for i in range(4)) for j in range(4)]
-    states = numpy.zeros([1, 8], dtype=numpy.uint32)
+    states = np.zeros([1, 8], dtype=np.uint32)
     states[0][0] = 1
 
     for i in range(duration):
-        new_states = numpy.zeros([0, 8], dtype=numpy.uint32)
+        new_states = np.zeros([0, 8], dtype=np.uint32)
         for state in states:
             bots = state[:4]
             resources = state[4:]
             n = len(new_states)
-            new_states = numpy.resize(new_states, (n + 1, 8))
-            new_states[n] = numpy.append(bots, resources + bots)
+            new_states = np.resize(new_states, (n + 1, 8))
+            new_states[n] = np.append(bots, resources + bots)
             for j, bot_cost in enumerate(bp):
                 if j < 3 and bots[j] >= max_costs[j]:
                         continue # No benefit to building more bots of this type
-                if numpy.all(resources >= bot_cost):
+                if np.all(resources >= bot_cost):
                     new_bots = bots.copy()
                     new_bots[j] += 1
                     new_resources = resources + bots - bot_cost
                     n = len(new_states)
-                    new_states = numpy.resize(new_states, (n + 1, 8))
-                    new_states[n] = numpy.append(new_bots, new_resources)
+                    new_states = np.resize(new_states, (n + 1, 8))
+                    new_states[n] = np.append(new_bots, new_resources)
         pre_prune = len(new_states)
         states = prune_states(new_states, max_costs, duration - i - 1)
 
@@ -112,4 +112,4 @@ def main(input_file):
 
 
 if __name__ == '__main__':
-    main('day19input.txt')
+    main('inputs/day19input.txt')
