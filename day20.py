@@ -1,6 +1,5 @@
 from collections import deque
-
-input_file = list(map(int, open('day20input.txt', 'r').read().strip().split('\n')))
+from aocinput import import_aoc_read
 
 
 def part1(input_file):
@@ -37,4 +36,5 @@ def main(input_file):
     print(f'part 2: {part2(input_file)}')
 
 if __name__ == '__main__':
+    input_file = import_aoc_read(20)
     main(input_file)

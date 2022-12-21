@@ -197,7 +197,7 @@ if __name__ == "__main__":
     try:
         file_name = sys.argv[1]
     except IndexError:
-        file_name = "day16input.txt"
+        file_name = "inputs/day16input.txt"
     pipe_data = open(file_name).read().split("\n")
     valve_data = parse_data(pipe_data)
     cave_valves = CaveValves(valve_data)

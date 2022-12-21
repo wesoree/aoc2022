@@ -1,4 +1,4 @@
-with open('day10input.txt', 'r') as file:
+with open('inputs/day10input.txt', 'r') as file:
     commands = [_.split(' ') for _ in file.read().split('\n')]
 
 x = 1

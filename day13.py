@@ -2,7 +2,7 @@ import ast
 import math
 import numpy as np
 
-with open('day13input.txt') as reader:
+with open('inputs/day13input.txt') as reader:
     lines = reader.readlines()
 
 input_data = [line for line in lines]

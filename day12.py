@@ -3,7 +3,7 @@ from collections import deque
 import os
 import string
 GridList = []
-with open("day12input.txt", "r") as data:
+with open("inputs/day12input.txt", "r") as data:
     for t in data:
         Line = t.strip()
         GridList.append(Line)

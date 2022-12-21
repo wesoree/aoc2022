@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-filename = 'day9input.txt'
+filename = 'inputs/day9input.txt'
 
 with open(filename) as f:
     lines = [line.rstrip().split(' ') for line in f]

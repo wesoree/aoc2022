@@ -44,5 +44,5 @@ def solve(puzzle):
 
 
 time_start = pfc()
-print(solve(read_puzzle('day18input.txt')))
+print(solve(read_puzzle('inputs/day18input.txt')))
 print(pfc()-time_start)

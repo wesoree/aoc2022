@@ -10,7 +10,7 @@ def manhattan_distance(x1, y1, x2, y2):
 
 def read_input():
     sensor_data = []
-    with open(r"day15input.txt") as f:
+    with open(r"inputs/day15input.txt") as f:
         data = f.read().splitlines()
         for line in data:
             sx, sy, bx, by = map(int, re.findall(r"([\-\d]+)", line))

@@ -60,7 +60,7 @@ class Rock:
         return -1
 
 
-input_file = open('day17input.txt', 'r').read().strip()
+input_file = open('inputs/day17input.txt', 'r').read().strip()
 
 rock_formation = set()
 active_rock = Rock(1, 2+3j)

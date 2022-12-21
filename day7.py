@@ -64,7 +64,7 @@ def sol2(input_string):
 
 
 if __name__ == '__main__':
-    with open('day7input.txt') as f:
+    with open('inputs/day7input.txt') as f:
         f = f.read()
     sol1(f)
     sol2(f)

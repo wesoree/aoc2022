@@ -1,6 +1,6 @@
 from collections import deque
 
-with open('day6input.txt') as file:
+with open('inputs/day6input.txt') as file:
     line = file.read()
 
 def solve(length):

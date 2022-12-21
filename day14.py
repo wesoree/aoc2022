@@ -1,5 +1,5 @@
 LineList = []
-with open("day14input.txt", "r") as data:
+with open("inputs/day14input.txt", "r") as data:
     for t in data:
         Line = t.strip().split(" -> ")
         for n, l in enumerate(Line):
