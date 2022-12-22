@@ -1,8 +1,8 @@
-from aocinput import import_aoc_list
+from aocinput import aocday
 
 DAY = 1
 
-elflist = import_aoc_list(DAY)
+elflist = aocday(DAY, True, False)
 elfsum = []
 top3 = []
 for i in elflist:

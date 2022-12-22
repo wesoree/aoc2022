@@ -25,6 +25,6 @@ def aocday(day: int, ilist: bool, read_line: bool):
         f = [line.strip() for line in open(f'inputs/day{day}input.txt')]
     if read_line:
         f = open(f'inputs/day{day}input.txt').readlines()
-    else:
+    if ilist is False and read_line is False:
         f = open(f'inputs/day{day}input.txt').read()
     return f
