@@ -97,13 +97,12 @@ class Node:
         if amt > 1:
             self.r.zip_nodes(lower.r, amt - 1)
 
-    def zip_edge(self, other, amt, self_set, other_set, self_dir, other_dir, d_mod):
+    def zip_edge(self, other, amount, self_set, other_set, self_dir, other_dir, d_mod):          
         self_set(self, other, d_mod)
         other_set(other, self, 1 / d_mod)
-
-        if amt > 1:
-            self.move(self_dir, True)[0].zip_edge(other.move(other_dir, True)[0], amt - 1, self_set,
-                                                  other_dir, d_mod)
+        
+        if amount > 1:
+            self.move(self_dir, True)[0].zip_edge(other.move(other_dir, True)[0], amount - 1, self_set, other_set, self_dir, other_dir, d_mod)
 
     def find_col(self, col, start):
         global paniks
@@ -294,17 +293,15 @@ def part2(file) -> int:
     planes = [["", "A", "B"], ["", "C", ""], ["D", "E", ""], ["F", "", ""]]
     to_plane = lambda r, c: planes[int(r / 50)][int(c / 50)]
     
-    for command in re.split('(\d+)', lines[-1])[1:-1]:
-        if command == "R":
-            print("Turning Right")
+    for cmd in re.split('(\d+)', lines[-1])[1:-1]:
+        if cmd == "R":
             d = d * (-1 * 1j)
             continue
-        if command == "L":
-            print("Turning Left")
+        if cmd == "L":
             d = d * 1j
             continue
         
-        for _ in range(int(command)):
+        for _ in range(int(cmd)):
             nex, d_nex = curr.move(d)
             if nex is None:
                 break
