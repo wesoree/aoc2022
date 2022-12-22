@@ -20,3 +20,11 @@ def import_aoc_readlines(day):
         f = f.readlines()
     return f
 
+def aocday(day: int, ilist: bool, read_line: bool):
+    if ilist:
+        f = [line.strip() for line in open(f'inputs/day{day}input.txt')]
+    if read_line:
+        f = open(f'inputs/day{day}input.txt').readlines()
+    else:
+        f = open(f'inputs/day{day}input.txt').read()
+    return f
