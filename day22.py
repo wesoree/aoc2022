@@ -5,8 +5,8 @@ from aocinput import aocday
 DAY = 22
 
 paniks = 0
-
-
+monke = []
+cordlist = []
 class Interval:
     def __init__(self, l, r):
         if r <= 1:
@@ -34,7 +34,7 @@ class Interval:
         left = Interval(self.l, min(self.r, other.l))
         right = Interval(max(self.l, other.r), self.r)
         if left.length() + right.length() + other.length() != self.length:
-            print('PANIK')
+            #print('PANIK')
             paniks += 1
         if left.includes(focus):
             return left
@@ -109,7 +109,7 @@ class Node:
         if self.coords[1] == col:
             return self
         if self.r == start:
-            print('PANIK')
+            #print('PANIK')
             paniks += 1
             return None
         return self.r.find_col(col, start)
@@ -310,13 +310,14 @@ def part2(file) -> int:
                 if 'b' not in file:
                     curr_plane = to_plane(curr.coords[0], curr.coords[1])
                     nex_plane = to_plane(nex.coords[0], nex.coords[1])
-                    print(f"From {curr_plane} to {nex_plane}")
+
+                    cordlist.append(f"From {curr_plane} to {nex_plane}")
                 # print(f"Curr: {curr.coords}, Next: {nex.coords}, Dir: {d}, Next Dir: {d_nex}")
                 # breakpoint()
             
             curr = nex
             d = d_nex
-            print(curr.coords)
+            cordlist.append(curr.coords)
             
     return (curr.coords[0]+1) * 1000 + (curr.coords[1]+1) * 4 + d_v[d]
 
@@ -327,8 +328,12 @@ middle = time()
 part2_ans = part2(file)
 end = time()
 
+with open('misc/day22misc.txt', 'w') as f:
+    for i in cordlist:
+        f.write(str(i) + '\n')
+f.close()
 
 print(f'Part 1: {part1_ans} solved in {middle - start}s')
 print(f'Part 2: {part2_ans} solved in {end - middle}s')
 print(f'Total time to solve: {end}s')
-print(f'There was {paniks} PANIK(S)')
+print(f'There were {paniks} PANIK(S)')
