@@ -19,6 +19,14 @@ optional = false
 python-versions = ">=3.8"
 
 [[package]]
+name = "parse"
+version = "1.19.0"
+description = "parse() is the opposite of format()"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "python-math"
 version = "0.0.1"
 description = "function with numbers"
@@ -40,7 +48,7 @@ mpmath = ">=0.19"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11.1"
-content-hash = "19dc94d9c06ccb0b165a86f8b4d9432949c3d257bf8b136a3a1d70a6974943e6"
+content-hash = "20eebe016ca0a8e8961a0c0a49d1670ccb3cbf5b64bdf48c84c3a874ac221597"
 
 [metadata.files]
 mpmath = [
@@ -76,6 +84,9 @@ numpy = [
     {file = "numpy-1.24.0-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:dbb0490f0a880700a6cc4d000384baf19c1f4df59fff158d9482d4dbbca2b239"},
     {file = "numpy-1.24.0-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:0104d8adaa3a4cc60c2777cab5196593bf8a7f416eda133be1f3803dd0838886"},
     {file = "numpy-1.24.0.tar.gz", hash = "sha256:c4ab7c9711fe6b235e86487ca74c1b092a6dd59a3cb45b63241ea0a148501853"},
+]
+parse = [
+    {file = "parse-1.19.0.tar.gz", hash = "sha256:9ff82852bcb65d139813e2a5197627a94966245c897796760a3a2a8eb66f020b"},
 ]
 python-math = [
     {file = "python_math-0.0.1-py3-none-any.whl", hash = "sha256:897efb087bc81bbb32277046830c1e2407203c637a43aa0834dcd4de822024c8"},
