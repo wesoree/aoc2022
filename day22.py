@@ -34,7 +34,6 @@ class Interval:
         left = Interval(self.l, min(self.r, other.l))
         right = Interval(max(self.l, other.r), self.r)
         if left.length() + right.length() + other.length() != self.length:
-            #print('PANIK')
             paniks += 1
         if left.includes(focus):
             return left
@@ -109,7 +108,6 @@ class Node:
         if self.coords[1] == col:
             return self
         if self.r == start:
-            #print('PANIK')
             paniks += 1
             return None
         return self.r.find_col(col, start)
@@ -312,8 +310,7 @@ def part2(file) -> int:
                     nex_plane = to_plane(nex.coords[0], nex.coords[1])
 
                     cordlist.append(f"From {curr_plane} to {nex_plane}")
-                # print(f"Curr: {curr.coords}, Next: {nex.coords}, Dir: {d}, Next Dir: {d_nex}")
-                # breakpoint()
+                
             
             curr = nex
             d = d_nex
