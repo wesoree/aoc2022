@@ -39,7 +39,7 @@ def aocsplit(day: int, long: bool, split_content):
 
 def aocsplitday(day: int, ilist: bool, read_line: bool, splitline: bool):
     if ilist:
-        f = [line.strip() for line in open(f'inputs/day{day}input.txt')]
+        f = [line.strip() for line in open(f'inputs/day{day}input.txt').splitlines()]
     if read_line:
         f = open(f'inputs/day{day}input.txt').readlines()
     if splitline:
